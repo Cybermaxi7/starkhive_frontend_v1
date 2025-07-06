@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,7 +34,7 @@ import Link from 'next/link';
 
 type UserRole = 'freelancer' | 'recruiter';
 
-export default function SignupPage() {
+function SignupForm() {
   const searchParams = useSearchParams();
   const [selectedRole, setSelectedRole] = useState<UserRole>('freelancer');
   const [showPassword, setShowPassword] = useState(false);
@@ -620,5 +620,38 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading component for Suspense fallback
+function SignupLoading() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+      <div className="w-full max-w-2xl space-y-8">
+        <div className="text-center space-y-4">
+          <div className="inline-flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
+              <Zap className="w-7 h-7 text-white animate-pulse" />
+            </div>
+            <span className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              StarkHive
+            </span>
+          </div>
+          <div className="animate-pulse">
+            <div className="h-8 bg-muted rounded-md mb-4"></div>
+            <div className="h-4 bg-muted rounded-md"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Main component with Suspense wrapper
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<SignupLoading />}>
+      <SignupForm />
+    </Suspense>
   );
 }
